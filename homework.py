@@ -132,9 +132,14 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_classes = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
-    training: Training = training_classes[workout_type](*data)
-    return training
+    training_classes: dict[str, type[Training]] = {'SWM': Swimming,
+                                                   'RUN': Running,
+                                                   'WLK': SportsWalking}
+    if workout_type in training_classes:
+        training: Training = training_classes[workout_type](*data)
+        return training
+    else:
+        raise ValueError('Неизвестный тип тренировки')
 
 
 def main(training: Training) -> None:
@@ -148,6 +153,7 @@ if __name__ == '__main__':
         ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
+        ('BAM', [500, 2, 76]),
     ]
 
     for workout_type, data in packages:
