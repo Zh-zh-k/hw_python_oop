@@ -1,15 +1,14 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    def __init__(self, training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float):
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
 
     def get_message(self) -> str:
         return (f'Тип тренировки: {self.training_type}; '
@@ -135,11 +134,10 @@ def read_package(workout_type: str, data: list) -> Training:
     training_classes: dict[str, type[Training]] = {'SWM': Swimming,
                                                    'RUN': Running,
                                                    'WLK': SportsWalking}
-    if workout_type in training_classes:
-        training: Training = training_classes[workout_type](*data)
-        return training
-    else:
+    if workout_type not in training_classes:
         raise ValueError('Неизвестный тип тренировки')
+    training: Training = training_classes[workout_type](*data)
+    return training
 
 
 def main(training: Training) -> None:
@@ -153,7 +151,6 @@ if __name__ == '__main__':
         ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
-        ('BAM', [500, 2, 76]),
     ]
 
     for workout_type, data in packages:
